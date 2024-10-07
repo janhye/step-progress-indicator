@@ -333,10 +333,7 @@ class _CircularIndicatorPainter implements CustomPainter {
     final isClockwise = circularDirection == CircularDirection.clockwise;
 
     // Make a continuous arc without rendering all the steps when possible
-    if (padding == 0 &&
-        customColor == null &&
-        customStepSize == null &&
-        roundedCap == null) {
+    if (padding == 0) {
       _drawContinuousArc(canvas, paint, rect, isClockwise);
     } else {
       _drawStepArc(canvas, paint, rect, isClockwise, stepLength);
