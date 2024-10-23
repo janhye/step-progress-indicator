@@ -324,25 +324,22 @@ class _CircularIndicatorPainter implements CustomPainter {
       width: w - maxDefinedSize,
     );
 
-    if (gradientColor != null) {
-      paint.shader =
-          gradientColor!.createShader(rect, textDirection: textDirection);
-    }
-
     // Change color selected or unselected based on the circularDirection
     final isClockwise = circularDirection == CircularDirection.clockwise;
 
     // Make a continuous arc without rendering all the steps when possible
     if (padding == 0) {
-      _drawContinuousArc(canvas, paint, rect, isClockwise);
+      _drawContinuousArc(
+          canvas, paint, rect, isClockwise, gradientColor, textDirection);
     } else {
-      _drawStepArc(canvas, paint, rect, isClockwise, stepLength);
+      _drawStepArc(canvas, paint, rect, isClockwise, stepLength, gradientColor,
+          textDirection);
     }
   }
 
   /// Draw a series of arcs, each composing the full steps of the indicator
   void _drawStepArc(Canvas canvas, Paint paint, Rect rect, bool isClockwise,
-      double stepLength) {
+      double stepLength, Gradient? gradientColor, TextDirection textDirection) {
     // Draw a series of circular arcs to compose the indicator
     // Starting based on startingAngle attribute
     //
@@ -396,13 +393,15 @@ class _CircularIndicatorPainter implements CustomPainter {
         color: stepColor,
         strokeWidth: indexStepSize,
         strokeCap: strokeCap,
+        gradientColor: gradientColor,
+        textDirection: textDirection,
       );
     }
   }
 
   /// Draw optimized continuous indicator instead of multiple steps
-  void _drawContinuousArc(
-      Canvas canvas, Paint paint, Rect rect, bool isClockwise) {
+  void _drawContinuousArc(Canvas canvas, Paint paint, Rect rect,
+      bool isClockwise, Gradient? gradientColor, TextDirection textDirection) {
     // Compute color of the selected and unselected bars
     final firstStepColor = isClockwise ? selectedColor : unselectedColor;
     final secondStepColor = !isClockwise ? selectedColor : unselectedColor;
@@ -451,6 +450,8 @@ class _CircularIndicatorPainter implements CustomPainter {
         strokeWidth: secondStepSize,
         color: secondStepColor!,
         strokeCap: secondCap,
+        gradientColor: gradientColor,
+        textDirection: textDirection,
       );
 
       // First arc, selected when clockwise, unselected otherwise
@@ -463,6 +464,8 @@ class _CircularIndicatorPainter implements CustomPainter {
         strokeWidth: firstStepSize,
         color: firstStepColor!,
         strokeCap: firstCap,
+        gradientColor: gradientColor,
+        textDirection: textDirection,
       );
     } else {
       // First arc, selected when clockwise, unselected otherwise
@@ -475,6 +478,8 @@ class _CircularIndicatorPainter implements CustomPainter {
         strokeWidth: firstStepSize,
         color: firstStepColor!,
         strokeCap: firstCap,
+        gradientColor: gradientColor,
+        textDirection: textDirection,
       );
 
       // Second arc, selected when counterclockwise, unselected otherwise
@@ -487,6 +492,8 @@ class _CircularIndicatorPainter implements CustomPainter {
         strokeWidth: secondStepSize,
         color: secondStepColor!,
         strokeCap: secondCap,
+        gradientColor: gradientColor,
+        textDirection: textDirection,
       );
     }
   }
@@ -501,17 +508,26 @@ class _CircularIndicatorPainter implements CustomPainter {
     required Color color,
     required double strokeWidth,
     required StrokeCap strokeCap,
-  }) =>
-      canvas.drawArc(
-        rect,
-        startingAngle,
-        sweepAngle,
-        false /*isRadial*/,
-        paint
-          ..color = color
-          ..strokeWidth = strokeWidth
-          ..strokeCap = strokeCap,
-      );
+    Gradient? gradientColor,
+    required TextDirection textDirection,
+  }) {
+    if (gradientColor != null) {
+      paint.shader =
+          gradientColor.createShader(rect, textDirection: textDirection);
+    } else {
+      paint.shader = null;
+    }
+    canvas.drawArc(
+      rect,
+      startingAngle,
+      sweepAngle,
+      false /*isRadial*/,
+      paint
+        ..color = color
+        ..strokeWidth = strokeWidth
+        ..strokeCap = strokeCap,
+    );
+  }
 
   bool _isSelectedColor(int step, bool isClockwise) => isClockwise
       ? step < currentStep
@@ -522,7 +538,7 @@ class _CircularIndicatorPainter implements CustomPainter {
       isClockwise ? step : totalSteps - step - 1;
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+  bool shouldRepaint(CustomPainter oldDelegate) => oldDelegate != this;
 
   @override
   bool hitTest(Offset position) => false;
