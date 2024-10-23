@@ -450,7 +450,6 @@ class _CircularIndicatorPainter implements CustomPainter {
         strokeWidth: secondStepSize,
         color: secondStepColor!,
         strokeCap: secondCap,
-        gradientColor: gradientColor,
         textDirection: textDirection,
       );
 
@@ -478,7 +477,6 @@ class _CircularIndicatorPainter implements CustomPainter {
         strokeWidth: firstStepSize,
         color: firstStepColor!,
         strokeCap: firstCap,
-        gradientColor: gradientColor,
         textDirection: textDirection,
       );
 
@@ -538,7 +536,7 @@ class _CircularIndicatorPainter implements CustomPainter {
       isClockwise ? step : totalSteps - step - 1;
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+  bool shouldRepaint(CustomPainter oldDelegate) => oldDelegate != this;
 
   @override
   bool hitTest(Offset position) => false;
