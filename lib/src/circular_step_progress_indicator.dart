@@ -522,7 +522,7 @@ class _CircularIndicatorPainter implements CustomPainter {
       isClockwise ? step : totalSteps - step - 1;
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => oldDelegate != this;
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 
   @override
   bool hitTest(Offset position) => false;
