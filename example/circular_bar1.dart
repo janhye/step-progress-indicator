@@ -37,7 +37,7 @@ class CircularBar1 extends StatelessWidget {
                           unselectedColor: Colors.grey[200],
                           selectedStepSize: 10.0,
                           width: 100,
-                          gradientColor: LinearGradient(
+                          selectedGradientColor: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [Colors.cyan, Colors.orangeAccent],
@@ -69,7 +69,7 @@ class CircularBar1 extends StatelessWidget {
                           height: 150,
                           startingAngle: -math.pi * 2 / 3,
                           arcSize: math.pi * 2 / 3 * 2,
-                          gradientColor: LinearGradient(
+                          selectedGradientColor: LinearGradient(
                             colors: [Colors.red, Colors.purple],
                           ),
                         ),
